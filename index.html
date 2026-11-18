@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" data-k>
+<meta name="viewport" content="width=device-width, initial-scale=1" data-k>
+<title data-k>Trilha de Inglês</title>
+<link rel="manifest" href="manifest.json" data-k>
+<meta name="theme-color" content="#2f6fec" data-k>
+<link rel="icon" href="icon-192.png" data-k>
+<link rel="apple-touch-icon" href="icon-192.png" data-k>
+<meta name="apple-mobile-web-app-capable" content="yes" data-k>
+<meta name="apple-mobile-web-app-title" content="Inglês" data-k>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-k>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-k>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" data-k>
+<style data-k>
+/* Layout: trilha vertical em zigue-zague, uma cor por unidade, barra de progresso fixa no topo e aula abrindo como painel de baixo. */
+:root{
+  --bg:#f3f5fa; --surface:#ffffff; --ink:#1b2232; --muted:#5a6477; --line:#dde3ee; --lock:#c6cedb; --lock-ink:#8a94a6;
+  --gold:#f4ae00; --gold-dark:#c78a00; --ok:#1f9d5c;
+  --u1:#2f6fec; --u1d:#1f4fb3; --u2:#8b4ef0; --u2d:#6531c2; --u3:#ea5a12; --u3d:#b5430a; --u4:#0f9a87; --u4d:#0a7062;
+  --display:"Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10141c; --surface:#1a202b; --ink:#e9edf4; --muted:#9ba5b7; --line:#2a3242; --lock:#353e4f; --lock-ink:#7d889c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10141c; --surface:#1a202b; --ink:#e9edf4; --muted:#9ba5b7; --line:#2a3242; --lock:#353e4f; --lock-ink:#7d889c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+.top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:2px solid var(--line)}
+.top-in{max-width:560px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.brand{font-family:var(--display);font-weight:800;font-size:1.25rem;line-height:1;flex:1;min-width:0}
+.chip{display:flex;align-items:center;gap:5px;font-weight:800;font-size:.95rem;font-variant-numeric:tabular-nums;padding:4px 10px;border-radius:999px;border:2px solid var(--line)}
+.chip svg{width:18px;height:18px}
+.chip.streak{color:var(--u3)}
+.chip.xp{color:var(--gold-dark)}
+:root[data-theme="dark"] .chip.xp{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip.xp{color:var(--gold)}}
+.bar-wrap{max-width:560px;margin:0 auto;padding:0 16px 10px;display:flex;align-items:center;gap:10px}
+.bar{flex:1;height:12px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--ok);border-radius:999px;transition:width .4s}
+.bar-label{font-size:.85rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+main{max-width:560px;margin:0 auto;padding:16px 16px 80px;display:flex;flex-direction:column;gap:22px}
+.howto{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px 16px}
+.howto h2{font-family:var(--display);font-size:1.1rem;margin:0 0 6px}
+.howto ol{margin:0;padding-left:20px;color:var(--muted);font-size:.95rem;display:grid;gap:4px}
+.howto b{color:var(--ink)}
+.save-note{font-size:.8rem;color:var(--muted);margin-top:8px}
+
+.unit-head{border-radius:18px;padding:14px 16px;color:#fff;background:var(--uc);box-shadow:0 5px 0 var(--ucd)}
+.unit-head small{display:block;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:.75rem;opacity:.9}
+.unit-head h2{font-family:var(--display);font-size:1.35rem;line-height:1.15;margin:2px 0 4px;text-wrap:balance}
+.unit-head p{margin:0;font-size:.92rem;opacity:.95}
+.unit-head .count{margin-top:8px;font-weight:800;font-size:.85rem;font-variant-numeric:tabular-nums}
+
+.path{display:flex;flex-direction:column;align-items:center;gap:18px;padding:10px 0 6px}
+.slot{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px}
+.node{position:relative;width:76px;height:72px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;
+  background:var(--uc);box-shadow:0 7px 0 var(--ucd);color:#fff;transition:transform .12s}
+.node:active{transform:translateY(5px);box-shadow:0 2px 0 var(--ucd)}
+.node svg{width:32px;height:32px}
+.node.locked{background:var(--lock);box-shadow:0 7px 0 color-mix(in srgb,var(--lock) 70%,#000);color:var(--lock-ink)}
+.node.review{width:88px;height:82px}
+.node.review:not(.locked){background:var(--gold);box-shadow:0 7px 0 var(--gold-dark)}
+.node.current::after{content:"";position:absolute;inset:-10px;border-radius:50%;border:4px solid var(--uc);opacity:.45;animation:pulse 1.6s ease-in-out infinite}
+.node.review.current::after{border-color:var(--gold)}
+@keyframes pulse{50%{transform:scale(1.08);opacity:.15}}
+@media (prefers-reduced-motion: reduce){.node.current::after{animation:none}.bar>i{transition:none}}
+.start{position:absolute;top:-38px;white-space:nowrap;background:var(--surface);color:var(--uc);border:2px solid var(--line);font-weight:800;font-size:.8rem;letter-spacing:.05em;padding:3px 10px;border-radius:10px;text-transform:uppercase}
+.label{font-weight:700;font-size:.85rem;color:var(--muted);text-align:center;max-width:150px;line-height:1.25}
+.label.on{color:var(--ink)}
+
+.scrim{position:fixed;inset:0;background:rgb(10 14 22 / .55);z-index:10;display:none;align-items:flex-end;justify-content:center}
+.scrim.open{display:flex}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:88%;overflow:auto;border-radius:22px 22px 0 0;padding:20px 18px 26px;display:flex;flex-direction:column;gap:14px}
+.sheet .tag{font-weight:800;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--uc)}
+.sheet h3{font-family:var(--display);font-size:1.5rem;line-height:1.15;margin:0;text-wrap:balance}
+.sheet p{margin:0}
+.box{border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+.box h4{margin:0 0 4px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.box.scene{border-color:var(--uc);background:color-mix(in srgb,var(--uc) 8%,var(--surface))}
+.ex{font-style:italic}
+.checks{display:grid;gap:8px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:2px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
+.check input{width:22px;height:22px;accent-color:var(--ok);flex:none;margin:1px 0 0}
+.check.dis{opacity:.55;cursor:not-allowed}
+.lockmsg{font-size:.9rem;font-weight:700;color:var(--u3)}
+.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:800;font-size:1rem;cursor:pointer;letter-spacing:.02em}
+.btn.primary{background:var(--uc);color:#fff;box-shadow:0 5px 0 var(--ucd)}
+.btn.primary:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ucd)}
+.btn.ghost{background:transparent;color:var(--muted);border:2px solid var(--line)}
+.cmd{font-size:.85rem;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px;user-select:all;display:none}
+.cmd.show{display:block}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-weight:800;padding:10px 16px;border-radius:12px;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header class="top" data-k>
+  <div class="top-in">
+    <div class="brand">Trilha de Inglês</div>
+    <div class="chip streak" title="Dias seguidos estudando"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.5 5 5.5 5 10.5A5 5 0 0 1 7 12.5c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg><span id="streak">0</span></div>
+    <div class="chip xp" title="Pontos de experiência"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg><span id="xp">0</span></div>
+  </div>
+  <div class="bar-wrap"><div class="bar"><i id="bar" style="width:0%"></i></div><span class="bar-label" id="barLabel">0 de 0 aulas</span></div>
+</header>
+
+<main id="main" data-k>
+  <section class="howto">
+    <h2>Como cada aula funciona</h2>
+    <ol>
+      <li>Toque na aula liberada e leia a <b>cena</b>. Imagine você dentro dela.</li>
+      <li>Toque em <b>Copiar comando da aula</b> e cole no chat com o Claude.</li>
+      <li>Explique a regra com suas palavras, faça os exercícios e corrija seus erros.</li>
+      <li>Marque o checkpoint. Com os 3 marcados, a próxima aula libera.</li>
+    </ol>
+    <div class="save-note" id="saveNote">Carregando…</div>
+  </section>
+  <div id="units"></div>
+</main>
+
+<div class="scrim" id="scrim" data-k>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle"></div>
+</div>
+<div class="toast" id="toast" role="status" data-k></div>
+
+<script type="application/json" id="state" data-k>{"done":{},"days":[]}</script>
+
+<script data-k>
+(function(){
+// Cópia intacta da página, feita antes de qualquer renderização. É ela que é salva (nunca o DOM vivo).
+const PRISTINE = document.documentElement.cloneNode(true);
+PRISTINE.removeAttribute("data-theme");
+["head","body"].forEach(t=>{const el=PRISTINE.querySelector(t);[...el.children].forEach(c=>{if(!c.hasAttribute("data-k"))c.remove()})});
+
+const UNITS = [
+ {id:"u1", name:"A base: os verbos do dia a dia", desc:"Falar da sua rotina e do que já aconteceu.", lessons:[
+  {id:"tobe", t:"Verbo to be", learn:"Am, is, are: dizer quem você é, onde está e como está.", scene:"Primeiro dia de intercâmbio no Canadá. Alguém na recepção pergunta quem você é e o que faz da vida.", ex:"I am Lucas. I am a painter at a truck factory, and I am a student."},
+  {id:"pres", t:"Simple present", learn:"Falar de rotina e de fatos. O -s da 3ª pessoa (he works).", scene:"Você explica para um colega estrangeiro como é o seu turno na pintura, do começo ao fim.", ex:"I start at 5 a.m. My leader checks the cabins every hour."},
+  {id:"do", t:"Do e does", learn:"Fazer perguntas e negativas no presente.", scene:"Um colega novo chega no posto e você pergunta coisas para ele, e ele te pergunta de volta.", ex:"Do you work on Saturdays? No, I don't. Does he use the spray gun?"},
+  {id:"pastreg", t:"Simple past: regulares", learn:"O passado com -ed e a pronúncia dele (worked, painted, checked).", scene:"No fim do turno, você conta o que fez durante o dia.", ex:"I painted three cabins and checked the tape on every door."},
+  {id:"pastirr", t:"Simple past: irregulares", learn:"Os verbos que não seguem a regra: go → went, make → made, have → had.", scene:"Segunda-feira: você conta para alguém como foi o seu fim de semana.", ex:"I went to the gym, I had lunch with my family and I made a new app."},
+  {id:"did", t:"Did e didn't", learn:"Perguntas e negativas no passado (o verbo volta ao normal).", scene:"Seu líder pergunta se você fez cada etapa do checklist ontem.", ex:"Did you check the tape? Yes, I did. I didn't paint the last cabin."},
+  {id:"r1", t:"Revisão da unidade 1", review:true, learn:"Misturar tudo da unidade: to be, presente e passado.", scene:"Você escreve um pequeno texto contando quem você é, sua rotina e o que fez ontem.", ex:"I am a student. I study at night. Yesterday I didn't study because I was tired."}
+ ]},
+ {id:"u2", name:"Agora e depois", desc:"O que está acontecendo e o que vai acontecer.", lessons:[
+  {id:"cont", t:"Present continuous", learn:"Am/is/are + -ing: o que está acontecendo agora.", scene:"Você está numa chamada de vídeo com um amigo do Canadá e descreve o que está fazendo naquele momento.", ex:"I am taping the doors right now. My friend is cleaning the gun."},
+  {id:"vs1", t:"Simple x continuous", learn:"Quando usar cada um (rotina x agora mesmo).", scene:"Você compara o que faz todo dia com o que está fazendo de diferente hoje.", ex:"I usually work in the paint booth, but today I am working in quality control."},
+  {id:"will", t:"Futuro com will", learn:"Decisões na hora, promessas e previsões.", scene:"Um colega precisa de ajuda e você decide ajudar na hora.", ex:"Don't worry, I will help you with the masking."},
+  {id:"going", t:"Futuro com going to", learn:"Planos já decididos, e a diferença para o will.", scene:"Você conta seus planos para o próximo ano: estudos, viagem e carreira.", ex:"I am going to travel to Canada. I am going to work as a developer."},
+  {id:"pcont", t:"Past continuous", learn:"Was/were + -ing: o que estava acontecendo quando algo aconteceu.", scene:"Você conta o momento em que a linha parou de repente.", ex:"I was painting the roof when the line stopped."},
+  {id:"r2", t:"Revisão da unidade 2", review:true, learn:"Presente, futuro e passado contínuo juntos.", scene:"Você escreve sobre o que está estudando agora e o que vai fazer quando terminar a faculdade.", ex:"I am learning Java now. When I finish UFABC, I am going to look for a job in tech."}
+ ]},
+ {id:"u3", name:"As regrinhas chatas", desc:"O que mais confunde quem fala português.", lessons:[
+  {id:"pp", t:"Present perfect", learn:"Have/has + particípio: experiências e coisas que começaram e continuam.", scene:"Numa entrevista de emprego em inglês, perguntam sua experiência com programação.", ex:"I have worked at the factory for years. I have built three personal apps."},
+  {id:"ppvs", t:"Present perfect x simple past", learn:"Quando o momento importa (ontem, em 2020) e quando não importa.", scene:"Na mesma entrevista, você precisa dizer o que já fez e quando fez.", ex:"I have used Python a lot. I started learning it in 2023."},
+  {id:"preptime", t:"In, on, at (tempo)", learn:"At 5 a.m., on Monday, in November: a regra de cada um.", scene:"Você explica para alguém de fora seus horários da semana: trabalho, faculdade e academia.", ex:"I start work at 5 a.m. I have classes on Wednesday. My trip is in July."},
+  {id:"prepplace", t:"In, on, at (lugar)", learn:"In the booth, on the door, at work.", scene:"Você explica onde estão as coisas na cabine de pintura.", ex:"The tape is on the door. The gun is in the booth. I am at work."},
+  {id:"art", t:"Artigos a, an, the", learn:"Quando usar cada um, e quando não usar nenhum.", scene:"Você descreve uma ferramenta que está procurando numa loja canadense.", ex:"I need a spray gun. An old one is fine. The one on the shelf is perfect."},
+  {id:"comp", t:"Comparativos e superlativos", learn:"Bigger, more expensive, the best: comparar coisas.", scene:"Você compara linguagens de programação para um amigo que quer começar.", ex:"Python is easier than C. Java is more popular in banks. C is the fastest."},
+  {id:"r3", t:"Revisão da unidade 3", review:true, learn:"As regras chatas todas juntas.", scene:"Você escreve um mini \"sobre mim\" para o seu portfólio no GitHub.", ex:"I have worked in automotive painting since 2020, and I have studied programming at night."}
+ ]},
+ {id:"u4", name:"Falando como gente grande", desc:"Pedir, aconselhar, imaginar e descrever processos.", lessons:[
+  {id:"can", t:"Can e could", learn:"Habilidade, permissão e pedidos educados.", scene:"No Canadá, você pede ajuda num café e numa estação de metrô.", ex:"Could you help me, please? Can I pay by card?"},
+  {id:"should", t:"Should, must, have to", learn:"Conselho, obrigação e regras.", scene:"Você treina um operador novo e explica as regras de segurança da pintura.", ex:"You must wear the mask. You should check the tape twice. You have to clean the gun."},
+  {id:"cond1", t:"Zero e first conditional", learn:"If + presente: fatos e consequências reais.", scene:"Você explica o que acontece se uma etapa da pintura for pulada.", ex:"If the tape is wrong, the paint gets on the glass. If I finish early, I will help you."},
+  {id:"cond2", t:"Second conditional", learn:"If + passado: situações imaginárias.", scene:"Alguém pergunta o que você faria se morasse no Canadá.", ex:"If I lived in Canada, I would work as a developer."},
+  {id:"passive", t:"Voz passiva", learn:"Is painted, was made: quando o processo importa mais que quem fez.", scene:"Você descreve para visitantes como uma cabine de caminhão é pintada.", ex:"The cabin is cleaned, then it is taped, and finally it is painted."},
+  {id:"phrasal", t:"Phrasal verbs do dia a dia", learn:"Verbo + preposição que muda o sentido: run out, set up, find out.", scene:"Você conta um problema no turno e como resolveu.", ex:"We ran out of tape, so I set up a new roll and found out the cause."},
+  {id:"r4", t:"Revisão final", review:true, learn:"Tudo junto, como numa conversa de verdade.", scene:"Você simula a chegada no Canadá: imigração, hostel, café e uma conversa com alguém novo.", ex:"I am going to stay for 20 days. I have studied English for a year. Could you recommend a good place to eat?"}
+ ]}
+];
+const CHECKS = ["Expliquei a regra com minhas palavras e o Claude aprovou","Escrevi frases usando a regra e corrigi meus erros","Acertei a revisão desta regra numa aula seguinte"];
+const ORDER = []; UNITS.forEach((u,ui)=>u.lessons.forEach(l=>{l.unit=u;l.ui=ui;l.idx=ORDER.length;ORDER.push(l)}));
+
+const $ = id=>document.getElementById(id);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today = ()=>new Date().toLocaleDateString("sv-SE");
+
+let state = {done:{},days:[]};
+try{ state = Object.assign(state, JSON.parse($("state").textContent)); }catch(e){}
+let LS = null; try{ LS = window.localStorage; }catch(e){}
+const LSKEY = "trilha-ingles-v1";
+
+const checksOf = id=>state.done[id]||[false,false,false];
+const isDone = l=>checksOf(l.id).every(Boolean);
+const unlocked = l=>l.idx===0 || isDone(ORDER[l.idx-1]);
+const current = ()=>ORDER.find(l=>!isDone(l));
+function xp(){let x=0;ORDER.forEach(l=>{const c=checksOf(l.id);x+=c.filter(Boolean).length*5+(c.every(Boolean)?5:0)});return x}
+function streak(){
+  const set=new Set(state.days); let d=new Date(); let n=0;
+  if(!set.has(d.toLocaleDateString("sv-SE"))) d.setDate(d.getDate()-1);
+  while(set.has(d.toLocaleDateString("sv-SE"))){n++;d.setDate(d.getDate()-1)}
+  return n;
+}
+const ICON = {
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1zm2 0h6V8a3 3 0 0 0-6 0z"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v16H6.5a1 1 0 0 0 0 2H20v2H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg>'
+};
+const OFFS = [0,58,86,58,0,-58,-86,-58];
+
+function render(){
+  const cur = current();
+  let html="";
+  UNITS.forEach((u,ui)=>{
+    const n=u.lessons.filter(isDone).length;
+    html+=`<section style="--uc:var(--u${ui+1});--ucd:var(--u${ui+1}d)"><div class="unit-head"><small>Unidade ${ui+1}</small><h2>${esc(u.name)}</h2><p>${esc(u.desc)}</p><div class="count">${n} de ${u.lessons.length} concluídas</div></div><div class="path">`;
+    u.lessons.forEach((l,i)=>{
+      const done=isDone(l), open=unlocked(l), isCur=cur&&cur.id===l.id;
+      const cls=["node", l.review?"review":"", !open?"locked":"", isCur?"current":""].join(" ");
+      const ic = done?ICON.check : !open?ICON.lock : l.review?ICON.star : ICON.book;
+      html+=`<div class="slot" style="transform:translateX(${OFFS[i%OFFS.length]}px)">${isCur?'<span class="start">Começar</span>':""}<button class="${cls}" data-id="${l.id}" aria-label="${esc(l.t)}${done?" (concluída)":!open?" (bloqueada)":""}">${ic}</button><div class="label${open?" on":""}">${esc(l.t)}</div></div>`;
+    });
+    html+=`</div></section>`;
+  });
+  $("units").innerHTML=html;
+  const total=ORDER.length, done=ORDER.filter(isDone).length;
+  $("bar").style.width=(done/total*100)+"%";
+  $("barLabel").textContent=`${done} de ${total} aulas`;
+  $("xp").textContent=xp();
+  $("streak").textContent=streak();
+  document.querySelectorAll(".node").forEach(b=>b.addEventListener("click",()=>openLesson(b.dataset.id)));
+}
+
+function command(l){
+  return `Aula ${l.idx+1} da Trilha de Inglês: ${l.t}. Modo professor: comece revisando rapidinho as aulas anteriores, use a cena "${l.scene}", me peça para explicar a regra com minhas palavras, avalie minha explicação sem me dar a resposta pronta e depois me passe exercícios para eu corrigir meus próprios erros.`;
+}
+
+let openId=null;
+function openLesson(id){
+  const l=ORDER.find(x=>x.id===id); openId=id;
+  const open=unlocked(l), c=checksOf(id), ui=l.ui+1;
+  const sheet=$("sheet");
+  sheet.style.setProperty("--uc",l.review?"var(--gold-dark)":`var(--u${ui})`);
+  sheet.style.setProperty("--ucd",l.review?"#8a5f00":`var(--u${ui}d)`);
+  sheet.innerHTML=`
+    <div class="tag">Unidade ${ui} · Aula ${l.idx+1}${l.review?" · Revisão":""}</div>
+    <h3 id="sTitle">${esc(l.t)}</h3>
+    <p>${esc(l.learn)}</p>
+    <div class="box scene"><h4>Imagine a cena</h4><p>${esc(l.scene)}</p></div>
+    <div class="box"><h4>Exemplo</h4><p class="ex">${esc(l.ex)}</p></div>
+    ${open?"":'<p class="lockmsg">Conclua a aula anterior para liberar o checkpoint desta.</p>'}
+    <div class="checks">${CHECKS.map((t,i)=>`<label class="check${open?"":" dis"}" for="ck${i}"><input type="checkbox" id="ck${i}" data-i="${i}" ${c[i]?"checked":""} ${open?"":"disabled"}><span>${esc(t)}</span></label>`).join("")}</div>
+    <button class="btn primary" id="copyBtn">Copiar comando da aula</button>
+    <div class="cmd" id="cmd">${esc(command(l))}</div>
+    <button class="btn ghost" id="closeBtn">Fechar</button>`;
+  sheet.querySelectorAll("input[type=checkbox]").forEach(cb=>cb.addEventListener("change",()=>toggle(l,+cb.dataset.i,cb.checked)));
+  $("copyBtn").addEventListener("click",async()=>{
+    const txt=command(l);
+    try{ await navigator.clipboard.writeText(txt); toast("Comando copiado. Cole no chat com o Claude."); }
+    catch(e){ $("cmd").classList.add("show"); toast("Não deu para copiar. Toque no texto e copie."); }
+  });
+  $("closeBtn").addEventListener("click",closeLesson);
+  $("scrim").classList.add("open");
+  $("closeBtn").focus();
+}
+function closeLesson(){ $("scrim").classList.remove("open"); openId=null; }
+$("scrim").addEventListener("click",e=>{ if(e.target.id==="scrim") closeLesson(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeLesson(); });
+
+function toggle(l,i,val){
+  if(!unlocked(l)) return;
+  const wasDone=isDone(l);
+  const c=checksOf(l.id).slice(); c[i]=val; state.done[l.id]=c;
+  if(val && !state.days.includes(today())) state.days.push(today());
+  render();
+  if(!wasDone && isDone(l)){ toast(l.review?"Unidade revisada! +20 XP":"Aula concluída! +20 XP. A próxima foi liberada."); }
+  save();
+}
+
+let toastT;
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2600); }
+
+let artifact=null, saveT=null;
+function save(){
+  try{ LS && LS.setItem(LSKEY, JSON.stringify(state)); }catch(e){}
+  if(!artifact) return;
+  clearTimeout(saveT);
+  saveT=setTimeout(async()=>{
+    const clone=PRISTINE.cloneNode(true);
+    clone.querySelector("#state").textContent=JSON.stringify(state).replace(/</g,"\\u003c");
+    try{ await artifact.publish("<!DOCTYPE html>\n"+clone.outerHTML); }
+    catch(e){ if(e && /not_granted|not_writer/.test(String(e.code||e.message||e))) $("saveNote").textContent="Você está vendo uma cópia só de leitura."; }
+  },1800);
+}
+
+render();
+$("saveNote").textContent="Progresso salvo neste navegador.";
+(async()=>{
+  try{ artifact = window.claude && await window.claude.use("artifact"); }catch(e){ artifact=null; }
+  if(artifact){
+    $("saveNote").textContent="Progresso salvo na trilha: aparece igual no celular e no PC.";
+  } else {
+    try{ const s=LS && LS.getItem(LSKEY); if(s){ state=Object.assign({done:{},days:[]},JSON.parse(s)); render(); } }catch(e){}
+  }
+})();
+})();
+</script>
+<script data-k>
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
